@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --forest-900: #0b2f24;
+    --forest-800: #103d2e;
+    --forest-700: #15563f;
+    --forest-600: #1f6b50;
+    --forest-300: #8ab5a2;
+    --forest-100: #e5efe9;
+    --ink: #203029;
+    --muted: #5d7067;
+    --paper: #fffdf8;
+  }
+  body {
+    width: 794px;
+    margin: 0 auto;
+    padding: 48px 56px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Inter', Arial, sans-serif;
+    font-size: calc(var(--fit-font-scale, 1) * 10.5pt);
+    line-height: calc(1.56 * var(--fit-line-scale, 1));
+  }
+  .resume {
+    position: relative;
+  }
+  .resume::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--forest-900), var(--forest-600) 46%, rgba(31, 107, 80, 0.08));
+  }
+  .resume-header {
+    margin-bottom: calc(22px * var(--fit-rhythm-scale, 1));
+  }
+  .header-kicker {
+    display: inline-block;
+    margin-bottom: 6px;
+    padding: 2px 9px;
+    border: 1px solid rgba(31, 107, 80, 0.28);
+    border-radius: 999px;
+    color: var(--forest-700);
+    font-size: 7.8pt;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    background: rgba(229, 239, 233, 0.62);
+  }
+  [data-section-type="name"] {
+    font-size: 34pt;
+    line-height: 1.05;
+    font-weight: 800;
+    color: var(--forest-900);
+    letter-spacing: 7px;
+    margin-bottom: 7px;
+  }
+  [data-section-type="contact"] {
+    color: var(--muted);
+    font-size: 9.5pt;
+    letter-spacing: 0.2px;
+  }
+  .resume-header-divider {
+    width: 100%;
+    height: 3px;
+    margin-top: calc(14px * var(--fit-rhythm-scale, 1));
+    background: linear-gradient(90deg, var(--forest-900), var(--forest-600) 42%, rgba(31, 107, 80, 0.18));
+    border-radius: 999px;
+  }
+  [data-sections-slot="main"] {
+    margin-top: 0;
+  }
+  .resume-section {
+    position: relative;
+    margin-bottom: calc(16px * var(--fit-rhythm-scale, 1));
+    padding-left: 0;
+  }
+  .resume-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    color: var(--forest-800);
+    font-size: 14pt;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    border-bottom: 1.2px solid rgba(31, 107, 80, 0.35);
+  }
+  .resume-section-title::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--forest-600);
+    box-shadow: 0 0 0 4px rgba(31, 107, 80, 0.10);
+  }
+  .resume-section-content {
+    color: var(--ink);
+  }
+  .resume-section-content p {
+    margin-bottom: calc(6px * var(--fit-rhythm-scale, 1));
+  }
+  .resume-section-content ul {
+    padding-left: 18px;
+    margin-bottom: calc(6px * var(--fit-rhythm-scale, 1));
+  }
+  .resume-section-content li {
+    margin-bottom: calc(2px * var(--fit-rhythm-scale, 1));
+    padding-left: 1px;
+  }
+  .resume-section-content li::marker {
+    color: var(--forest-600);
+  }
+  .resume-section-content strong {
+    color: var(--forest-700);
+    font-weight: 700;
+  }
+  .resume-section-content h1 {
+    font-size: 28pt;
+    line-height: 1.14;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin: 8px 0 4px;
+    color: var(--forest-900);
+  }
+  .resume-section-content h2 {
+    font-size: 14pt;
+    line-height: 1.25;
+    font-weight: 700;
+    margin: 8px 0 4px;
+    color: var(--forest-800);
+  }
+  .resume-section-content h3 {
+    font-size: 12.5pt;
+    line-height: 1.30;
+    font-weight: 700;
+    margin: 8px 0 4px;
+    color: var(--forest-700);
+  }
+  .resume-section-content h4 {
+    font-size: 11.25pt;
+    line-height: 1.32;
+    font-weight: 700;
+    margin: 7px 0 3px;
+    color: var(--forest-700);
+  }
+  .resume-section-content h5 {
+    font-size: 10.5pt;
+    line-height: 1.32;
+    font-weight: 700;
+    margin: 6px 0 2px;
+    color: var(--forest-700);
+  }
+  .resume-section-content h6 {
+    font-size: 10pt;
+    line-height: 1.30;
+    font-weight: 700;
+    margin: 5px 0 2px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="resume">
+    <header class="resume-header">
+      <div class="header-kicker">Resume</div>
+      <h1 data-section-type="name"></h1>
+      <div data-section-type="contact"></div>
+      <div class="resume-header-divider" aria-hidden="true"></div>
+    </header>
+
+    <main data-sections-slot="main"></main>
+  </div>
+</body>
+</html>
