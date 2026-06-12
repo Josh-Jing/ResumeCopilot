@@ -1,8 +1,23 @@
 import MarkdownIt from 'markdown-it';
 import type { ResumeContent, ResumeSection } from '../api/client';
+import { renderInnerBlockHtml } from './innerBlock';
 import { isSpecialSectionId } from './sectionModel';
 
+const mdCell = new MarkdownIt({ html: false, breaks: true, linkify: true });
 const mdIt = new MarkdownIt({ html: false, breaks: true, linkify: true });
+
+const defaultFenceRule = mdIt.renderer.rules.fence;
+mdIt.renderer.rules.fence = (tokens, idx, options, env, self) => {
+  const token = tokens[idx];
+  if (token.info.trim() === 'inner') {
+    return renderInnerBlockHtml(token.content, (body) => mdCell.render(body));
+  }
+  return defaultFenceRule!(tokens, idx, options, env, self);
+};
+
+export function renderMarkdown(markdown: string): string {
+  return mdIt.render(markdown || '');
+}
 
 export function parseContactInline(markdown: string): string[] {
   return markdown
@@ -42,7 +57,7 @@ export function renderSpecialSectionContent(sectionType: string, markdown: strin
     }
     return escapeHtml(raw);
   }
-  return mdIt.render(markdown || '');
+  return renderMarkdown(markdown || '');
 }
 
 function renderSpecialSection(doc: Document, id: string, section: ResumeSection | undefined) {
@@ -72,7 +87,7 @@ function renderGeneralSection(doc: Document, section: ResumeSection): HTMLElemen
 
   const content = doc.createElement('div');
   content.className = 'resume-section-content markdown-body';
-  content.innerHTML = mdIt.render(section.content || '');
+  content.innerHTML = renderMarkdown(section.content || '');
 
   el.append(title, content);
   return el;
