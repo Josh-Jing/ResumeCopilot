@@ -54,7 +54,8 @@ function testRenderInnerBlockHtml() {
 
   assert(html.includes('class="inner-row"'), 'inner row wrapper');
   assert(html.includes('inner-col--left'), 'left column class');
-  assert(html.includes('flex: 0 0 50%'), 'fixed width style');
+  assert(html.includes('grid-template-columns: 50fr 50fr'), 'grid column widths');
+  assert(!html.includes('flex: 0 0'), 'no flex percent basis');
   assert(html.includes('<h3>东北大学</h3>'), 'markdown heading rendered');
   assert(html.includes('<p>本科</p>'), 'plain text rendered');
 }
@@ -72,8 +73,20 @@ function testMarkdownIntegration() {
   assert(html.includes('class="inner-row"'), 'fence renders inner row');
   assert(html.includes('<h3>东北大学</h3>'), 'h3 inside inner col');
   assert(html.includes('inner-col--left'), 'left align class');
-  assert(html.includes('flex: 0 0 12.5%'), 'auto columns split remainder');
+  assert(
+    html.includes('grid-template-columns: 50fr 12.5fr 12.5fr 12.5fr 12.5fr'),
+    'auto columns split remainder via fr grid',
+  );
   assert(!html.includes('<pre>'), 'not rendered as code block');
+}
+
+function testTwoColumnRowFitsContentWidth() {
+  const html = renderInnerBlockHtml(
+    '- [[ ### 某理工大学\n- ]] 本科 · 软件工程 · 2021.09 – 2025.06',
+    (body) => (body.startsWith('### ') ? `<h3>${body.slice(4)}</h3>` : `<p>${body}</p>`),
+  );
+  assert(html.includes('grid-template-columns: 50fr 50fr'), 'two equal columns');
+  assert(!html.includes('flex: 0 0'), 'grid avoids flex gap overflow');
 }
 
 function testThreeColumnVariant() {
@@ -85,12 +98,13 @@ function testThreeColumnVariant() {
 
   const html = renderMarkdown(markdown);
   assert(html.includes('inner-col--right'), 'right align class');
-  assert((html.match(/flex: 0 0 25%;/g) || []).length === 2, 'two 25% columns');
+  assert(html.includes('grid-template-columns: 50fr 25fr 25fr'), 'three column grid widths');
 }
 
 testParseInnerLine();
 testResolveWidthsForEducationExample();
 testRenderInnerBlockHtml();
 testMarkdownIntegration();
+testTwoColumnRowFitsContentWidth();
 testThreeColumnVariant();
-console.log('innerBlock tests passed: 5');
+console.log('innerBlock tests passed: 6');

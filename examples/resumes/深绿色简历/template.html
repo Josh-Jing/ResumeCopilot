@@ -168,14 +168,17 @@
     color: var(--muted);
   }
   .inner-row {
-    display: flex;
+    display: grid;
     align-items: center;
     gap: 8px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .inner-col {
     min-width: 0;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    box-sizing: border-box;
   }
   .inner-col--left { text-align: left; }
   .inner-col--center { text-align: center; }

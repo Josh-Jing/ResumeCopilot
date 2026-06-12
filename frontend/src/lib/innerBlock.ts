@@ -65,12 +65,12 @@ export function renderInnerBlockHtml(
   if (columns.length === 0) return '';
 
   const widths = resolveInnerColumnWidths(columns);
-  const colsHtml = columns.map((col, index) => {
-    const width = widths[index];
+  const gridTemplate = widths.map((width) => `${width}fr`).join(' ');
+  const colsHtml = columns.map((col) => {
     const alignClass = ALIGN_CLASS[col.align];
     const innerHtml = renderMarkdown(col.body);
-    return `<div class="inner-col ${alignClass}" style="flex: 0 0 ${width}%;">${innerHtml}</div>`;
+    return `<div class="inner-col ${alignClass}">${innerHtml}</div>`;
   }).join('');
 
-  return `<div class="inner-row">${colsHtml}</div>\n`;
+  return `<div class="inner-row" style="grid-template-columns: ${gridTemplate};">${colsHtml}</div>\n`;
 }
