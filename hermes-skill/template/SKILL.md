@@ -136,6 +136,26 @@ body {
 
 Use ratio variables such as `--fit-rhythm-scale` and `--fit-line-scale`; avoid absolute variables such as `--fit-header-gap: 34px`, because different templates have different base rhythms.
 
+## Typography / 正文两端对齐
+
+The app injects body-copy justification into preview and PDF export. Templates do **not** need to duplicate this CSS.
+
+```css
+.resume-section-content > p,
+.resume-section-content > ul > li,
+.resume-section-content > ol > li {
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
+```
+
+Rules:
+
+- Applies to ordinary section paragraphs and list items only (direct children of `.resume-section-content`).
+- Headings, name, contact, and centered header blocks stay unchanged.
+- **`inner` columns are excluded** — they keep default center alignment; `[[` and `]]` still control left/right columns.
+- Do not add competing `text-align` rules on `.resume-section-content p` or list items unless the user explicitly asks for left-aligned body copy.
+
 ## Dynamic schema lookup
 
 Before generating or validating a template, try to fetch the live backend schema:

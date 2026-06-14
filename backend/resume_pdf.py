@@ -35,6 +35,17 @@ def compute_fit_mode(natural_height: int | float) -> str:
         return "compact"
     return "overflow"
 
+TYPOGRAPHY_CSS = """
+<style id="resume-copilot-typography-css">
+  .resume-section-content > p,
+  .resume-section-content > ul > li,
+  .resume-section-content > ol > li {
+    text-align: justify;
+    text-justify: inter-ideograph;
+  }
+</style>
+"""
+
 PRINT_CSS = """
 <style id="resume-copilot-print-css">
   @page { size: A4; margin: 0; }
@@ -179,6 +190,14 @@ def _render_general_section(section: dict) -> str:
     )
 
 
+def _inject_typography_css(document_html: str) -> str:
+    if "resume-copilot-typography-css" in document_html:
+        return document_html
+    if "</head>" in document_html:
+        return document_html.replace("</head>", TYPOGRAPHY_CSS + "</head>", 1)
+    return TYPOGRAPHY_CSS + document_html
+
+
 def _inject_print_css(document_html: str) -> str:
     if "resume-copilot-print-css" in document_html:
         return document_html
@@ -233,6 +252,7 @@ def build_print_html(template_html: str, content: dict, *, fit_mode: str | None 
 
     result = _replace_element_inner_by_attr(result, "data-sections-slot", "main", "\n".join(general_html))
     result = _inject_fit_mode_style(result, fit_mode)
+    result = _inject_typography_css(result)
     result = _inject_print_css(result)
     if not result.lstrip().lower().startswith("<!doctype"):
         result = "<!doctype html>\n" + result

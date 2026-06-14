@@ -10,6 +10,13 @@ function assertEqual(actual: unknown, expected: unknown, label: string) {
   if (a !== e) throw new Error(`${label}: expected ${e}, got ${a}`);
 }
 
+function testBuildPreviewSrcDocInjectsTypographyStyle() {
+  const html = '<!doctype html><html><head></head><body><main></main></body></html>';
+  const srcDoc = buildPreviewSrcDoc(html, 'natural');
+  assertTrue(srcDoc.includes('resume-copilot-typography-css'), 'typography style is injected');
+  assertTrue(srcDoc.includes('text-justify: inter-ideograph'), 'CJK justify hint is present');
+}
+
 function testBuildPreviewSrcDocInjectsFitModeStyle() {
   const html = '<!doctype html><html><head></head><body><main></main></body></html>';
   const srcDoc = buildPreviewSrcDoc(html, 'compact');
@@ -36,6 +43,7 @@ function testOverflowPolicyLetsHugeContentOverflow() {
 }
 
 const tests = [
+  testBuildPreviewSrcDocInjectsTypographyStyle,
   testBuildPreviewSrcDocInjectsFitModeStyle,
   testBuildPreviewSrcDocAddsHeightReporter,
   testOverflowPolicyClipsAutoFittedModes,

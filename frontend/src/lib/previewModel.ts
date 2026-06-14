@@ -1,5 +1,6 @@
 import type { FitMode } from './fitPolicy';
 import { injectFitModeStyle } from './fitPolicy';
+import { injectTypographyStyle } from './typographyPolicy';
 
 const HEIGHT_REPORTER_SCRIPT = `<script>
   function reportHeight() {
@@ -12,7 +13,7 @@ const HEIGHT_REPORTER_SCRIPT = `<script>
 </script>`;
 
 export function buildPreviewSrcDoc(renderedHtml: string, fitMode: FitMode): string {
-  let html = injectFitModeStyle(renderedHtml, fitMode);
+  let html = injectTypographyStyle(injectFitModeStyle(renderedHtml, fitMode));
   if (html.includes('</body>')) {
     html = html.replace('</body>', `${HEIGHT_REPORTER_SCRIPT}</body>`);
   } else {
