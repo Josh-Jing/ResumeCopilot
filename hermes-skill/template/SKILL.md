@@ -62,6 +62,44 @@ Template CSS should style these stable classes:
 .markdown-body {}
 ```
 
+## Inner inline columns (` ```inner ` blocks)
+
+Section content may use fenced **`inner`** blocks for horizontal inline columns inside `.resume-section-content`. The renderer turns each `-` line into one grid column; column bodies still use normal Markdown (for example `###` headings).
+
+Templates **must** include the CSS below so inner rows stay within the content box (same horizontal bounds as section title underlines and page margins). Without it, inner columns render as unstyled HTML and may overflow.
+
+Required CSS (copy into every new or updated `template.html`):
+
+```css
+.inner-row {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.inner-col {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+.inner-col--left { text-align: left; }
+.inner-col--center { text-align: center; }
+.inner-col--right { text-align: right; }
+.inner-col h1, .inner-col h2, .inner-col h3,
+.inner-col h4, .inner-col h5, .inner-col h6,
+.inner-col p { margin: 0; }
+```
+
+Design notes:
+
+- Use **CSS Grid + `fr` tracks**, not flex `50%` columns plus gap — percentage flex bases overflow the content width.
+- Inner rows must not use whole-row `transform: scale(...)`.
+- When updating project example templates, also sync runtime copies under `~/.resume-copilot/resumes/<name>/template.html` (dev reads `examples/`, production reads the runtime home).
+
+Example templates with inner CSS: `examples/resumes/通用技术简历/template.html`.
+
 ## Fit Policy / 一页纸排版策略
 
 ResumeCopilot keeps the A4 page, equal left/right Page Margin, and full-width dividers fixed. Do **not** use whole-page or whole-content `transform: scale(...)` in templates to fit content; that shortens horizontal rules and causes right-side blank space.
@@ -144,6 +182,7 @@ If the backend is not running, fall back to the documented defaults:
 12. Avoid relying on external fonts as the only font source; include local Chinese font fallbacks such as `PingFang SC`, `Microsoft YaHei`, `Noto Sans SC`, `sans-serif`.
 13. Preserve the existing visual intent unless the user explicitly asks for a redesign.
 14. Do not add AI UI to the frontend template; AI interaction happens in Hermes terminal chat.
+15. Include **inner inline column CSS** (`.inner-row`, `.inner-col`, alignment modifiers) in every template so ` ```inner ` content blocks render correctly in preview and PDF export.
 
 ## Photo Section guidance
 
@@ -219,3 +258,4 @@ The helper is intentionally read-only. It does not edit templates and does not c
 - Multiple main slots are ambiguous; keep one main slot for now.
 - Do not use whole-content `transform: scale(...)` as a one-page fitting trick. It breaks equal margins and makes long horizontal rules stop before the right Page Margin.
 - Fit Policy variables should be ratio-based (`--fit-rhythm-scale`, `--fit-line-scale`), not absolute per-mode values, so each template keeps its own visual rhythm.
+- Missing `.inner-row` grid CSS makes ` ```inner ` blocks look broken or overflow past section title rules; add the required inner CSS from this skill.

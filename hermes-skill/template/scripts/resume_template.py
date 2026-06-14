@@ -138,6 +138,23 @@ def _has_header_divider(template_html: str) -> bool:
     return False
 
 
+def _has_inner_row_styles(template_html: str) -> bool:
+    lowered = template_html.lower()
+    if ".inner-row" not in lowered or ".inner-col" not in lowered:
+        return False
+    display = _extract_css_property(template_html, ".inner-row", "display")
+    return display == "grid"
+
+
+def _add_inner_row_warning(template_html: str, warnings: list[str]) -> None:
+    if not _has_inner_row_styles(template_html):
+        warnings.append(
+            "Inner inline column CSS missing; templates should define .inner-row (display: grid), "
+            ".inner-col, and .inner-col--left/center/right so ```inner fenced blocks render within "
+            "the content box. See template skill for the required CSS snippet."
+        )
+
+
 def _add_header_divider_warning(template_html: str, warnings: list[str]) -> None:
     if not _has_header_divider(template_html):
         warnings.append(
@@ -316,6 +333,7 @@ def validate_template(template_html: str, schema: dict[str, Any] | None = None) 
             warnings.append(f"template does not mention .{cls}; injected general sections may be unstyled")
 
     _add_header_divider_warning(template_html, warnings)
+    _add_inner_row_warning(template_html, warnings)
     _add_heading_hierarchy_warnings(template_html, warnings)
 
     return {

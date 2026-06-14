@@ -49,6 +49,31 @@ def scaled_heading_html(base_h2_size: str = "20pt") -> str:
     """
 
 
+def test_inner_row_warns_when_css_missing() -> None:
+    report = validate_template(scaled_heading_html("20pt"))
+    assert_true(
+        any("Inner inline column CSS missing" in warning for warning in report["warnings"]),
+        "missing inner row CSS warning",
+    )
+
+
+def test_inner_row_accepts_grid_styles() -> None:
+    html = scaled_heading_html("20pt").replace(
+        "</style>",
+        """
+      .inner-row { display: grid; width: 100%; max-width: 100%; }
+      .inner-col { min-width: 0; }
+      .inner-col--left { text-align: left; }
+    </style>""",
+    )
+    report = validate_template(html)
+    assert_equal(
+        [warning for warning in report["warnings"] if "Inner inline column CSS missing" in warning],
+        [],
+        "grid inner row CSS should not warn",
+    )
+
+
 def test_header_divider_warns_when_no_visual_separator_detected() -> None:
     html = scaled_heading_html("20pt").replace(
         ".resume-header { border-bottom: 2px solid #1a5276; }\n      ",
@@ -234,6 +259,8 @@ def test_photo_layout_returns_ok_false_when_warnings() -> None:
 
 
 def main() -> None:
+    test_inner_row_warns_when_css_missing()
+    test_inner_row_accepts_grid_styles()
     test_header_divider_warns_when_no_visual_separator_detected()
     test_header_divider_accepts_explicit_divider_element()
     test_header_divider_accepts_resume_header_border_bottom()
@@ -248,7 +275,7 @@ def main() -> None:
     test_photo_layout_warns_when_gap_too_large()
     test_photo_layout_returns_ok_true_when_no_warnings()
     test_photo_layout_returns_ok_false_when_warnings()
-    print("resume_template tests passed: 14")
+    print("resume_template tests passed: 16")
 
 
 if __name__ == "__main__":

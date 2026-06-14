@@ -12,6 +12,7 @@ from typing import Match
 from urllib.parse import quote
 
 from resume_domain import SPECIAL_SECTION_IDS
+from inner_block import render_inner_block_html
 
 A4_HEIGHT = 1123
 FILL_THRESHOLD = 0.75
@@ -54,9 +55,24 @@ def parse_contact_inline(markdown: str) -> list[str]:
 def render_markdown(markdown: str) -> str:
     """Small Markdown subset renderer for resume content.
 
-    Supports headings, unordered lists, paragraphs, strong/code spans, and line
-    breaks. HTML is escaped first; raw HTML in resume content is not rendered.
+    Supports headings, unordered lists, paragraphs, strong/code spans, line
+    breaks, and ```inner fenced inline-column blocks. HTML is escaped first.
     """
+    inner_fence = re.compile(r"```inner\n(.*?)```", re.DOTALL)
+    parts: list[str] = []
+    last = 0
+    for match in inner_fence.finditer(markdown):
+        if match.start() > last:
+            parts.append(_render_markdown_blocks(markdown[last:match.start()]))
+        parts.append(render_inner_block_html(match.group(1), _render_markdown_blocks))
+        last = match.end()
+    if last < len(markdown):
+        parts.append(_render_markdown_blocks(markdown[last:]))
+    return "\n".join(part for part in parts if part)
+
+
+def _render_markdown_blocks(markdown: str) -> str:
+    """Render ordinary markdown blocks outside fenced inner sections."""
     blocks: list[str] = []
     list_items: list[str] = []
     paragraph: list[str] = []

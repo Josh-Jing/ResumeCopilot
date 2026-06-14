@@ -154,6 +154,39 @@ For content edits:
 - Preserve factual claims. Do not invent metrics; ask or phrase qualitatively if data is unavailable.
 - Contact section should be a Markdown list. Preview renders it inline joined by ` · `.
 
+## Inner inline columns (` ```inner `)
+
+Use fenced inner blocks inside general section `content` for one-row multi-column layouts (education headers, date ranges aligned left/right, etc.).
+
+Syntax (each `-` line = one column):
+
+````markdown
+```inner
+- [50%] [[ ### 东北大学
+- 本科
+- 计算机科学与技术
+- 2020.09 – 2024.07
+- 专业排名前25%
+```
+````
+
+Rules:
+
+- `[50%]` sets column width; columns without a width share the remaining space equally.
+- `[[` = left-align column text; `]]` = right-align; omit both for center.
+- Column body supports normal Markdown (`###`, `**bold**`, etc.).
+- The resume's `template.html` must include inner CSS (see template skill); content edits alone are not enough.
+- Dev data lives in `examples/resumes/`; production uses `~/.resume-copilot/resumes/`. After changing example templates, sync runtime templates for the same resume name.
+
+Two-column example (school left, details right):
+
+````markdown
+```inner
+- [[ ### 某理工大学
+- ]] 本科 · 软件工程 · 2021.09 – 2025.06
+```
+````
+
 ## Safety rules
 
 - Do not manually generate general section IDs when using the API; let backend generate them.
