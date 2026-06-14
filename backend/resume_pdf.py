@@ -15,6 +15,22 @@ from resume_domain import SPECIAL_SECTION_IDS
 from inner_block import render_inner_block_html
 
 A4_HEIGHT = 1123
+FILL_THRESHOLD = 0.75
+MAX_AUTO_FIT_RATIO = 1.3
+VALID_FIT_MODES = {"natural", "expand", "compact", "overflow"}
+
+
+def compute_fit_mode(natural_height: int | float) -> str:
+    ratio = natural_height / A4_HEIGHT
+    if ratio < FILL_THRESHOLD:
+        return "natural"
+    if ratio < 1.0:
+        return "expand"
+    if ratio == 1.0:
+        return "natural"
+    if ratio <= MAX_AUTO_FIT_RATIO:
+        return "compact"
+    return "overflow"
 
 TYPOGRAPHY_CSS = """
 <style id="resume-copilot-typography-css">
@@ -187,7 +203,26 @@ def _inject_print_css(document_html: str) -> str:
     return PRINT_CSS + document_html
 
 
-def build_print_html(template_html: str, content: dict) -> str:
+def _fit_mode_style(mode: str | None) -> str:
+    if mode == "expand":
+        return '<style data-fit-mode="expand">\nhtml { --fit-rhythm-scale: 1.06; --fit-line-scale: 1.03; }\n</style>\n'
+    if mode == "compact":
+        return '<style data-fit-mode="compact">\nhtml { --fit-rhythm-scale: 0.65; --fit-line-scale: 0.88; --fit-font-scale: 0.94; }\n</style>\n'
+    if mode == "overflow":
+        return '<style data-fit-mode="overflow">\nhtml { /* no adjustments */ }\n</style>\n'
+    return ""
+
+
+def _inject_fit_mode_style(document_html: str, mode: str | None) -> str:
+    style = _fit_mode_style(mode)
+    if not style:
+        return document_html
+    if "</head>" in document_html:
+        return document_html.replace("</head>", style + "</head>", 1)
+    return style + document_html
+
+
+def build_print_html(template_html: str, content: dict, *, fit_mode: str | None = None) -> str:
     """Return complete print-oriented HTML for PDF export."""
     result = template_html
 
@@ -212,6 +247,7 @@ def build_print_html(template_html: str, content: dict) -> str:
             general_html.append(_render_general_section(section))
 
     result = _replace_element_inner_by_attr(result, "data-sections-slot", "main", "\n".join(general_html))
+    result = _inject_fit_mode_style(result, fit_mode)
     result = _inject_typography_css(result)
     result = _inject_print_css(result)
     if not result.lstrip().lower().startswith("<!doctype"):

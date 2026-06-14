@@ -92,9 +92,13 @@ export async function renameResume(name: string, newName: string): Promise<Resum
   });
 }
 
-export async function exportPdf(name: string): Promise<Blob> {
+export type PdfFitMode = 'natural' | 'expand' | 'compact' | 'overflow';
+
+export async function exportPdf(name: string, fitMode?: PdfFitMode): Promise<Blob> {
   const res = await fetch(`${API_BASE}/resumes/${encodeURIComponent(name)}/export-pdf`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fitMode && fitMode !== 'natural' ? { smart_one_page: true, fit_mode: fitMode } : {}),
   });
   if (!res.ok) {
     let detail = '';

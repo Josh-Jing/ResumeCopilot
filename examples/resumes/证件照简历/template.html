@@ -5,8 +5,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', Arial, sans-serif;
-    font-size: 10.5pt;
-    line-height: 1.48;
+    font-size: calc(10.5pt * var(--fit-font-scale, 1));
+    line-height: calc(1.48 * var(--fit-line-scale, 1));
     color: #2c2c2c;
     padding: 48px 56px;
     width: 794px;
@@ -19,8 +19,8 @@
   .resume-header {
     position: relative;
     min-height: 107px;
-    margin-bottom: 12px;
-    padding: 2px 91.75px 8px 0;
+    margin-bottom: calc(12px * var(--fit-rhythm-scale, 1));
+    padding: 2px 91.75px calc(8px * var(--fit-rhythm-scale, 1)) 0;
   }
   .resume-header-divider {
     position: absolute;
@@ -81,7 +81,7 @@
     display: block;
   }
   .resume-section {
-    margin-bottom: 13px;
+    margin-bottom: calc(13px * var(--fit-rhythm-scale, 1));
   }
   .resume-section-title {
     font-size: 14pt;
@@ -91,15 +91,15 @@
     padding-bottom: 3px;
     margin-bottom: 8px;
   }
-  .resume-section-content p { margin-bottom: 6px; }
+  .resume-section-content p { margin-bottom: calc(6px * var(--fit-rhythm-scale, 1)); }
   .resume-section-content > p,
   .resume-section-content > ul > li,
   .resume-section-content > ol > li {
     text-align: justify;
     text-justify: inter-ideograph;
   }
-  .resume-section-content ul { padding-left: 18px; margin-bottom: 6px; }
-  .resume-section-content li { margin-bottom: 2px; }
+  .resume-section-content ul { padding-left: 18px; margin-bottom: calc(6px * var(--fit-rhythm-scale, 1)); }
+  .resume-section-content li { margin-bottom: calc(2px * var(--fit-rhythm-scale, 1)); }
   .resume-section-content strong { color: #1a5276; }
   .resume-section-content h1 {
     font-size: 28pt;

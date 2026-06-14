@@ -31,7 +31,11 @@ from resume_domain import (
     update_section as domain_update_section,
     validate_content,
 )
-from resume_pdf import build_content_disposition, build_print_html, render_pdf_bytes
+from resume_pdf import (
+    build_content_disposition,
+    build_print_html,
+    render_pdf_bytes,
+)
 
 # ── Paths ───────────────────────────────────────────────────────────────────
 
@@ -213,6 +217,11 @@ class ResumeCopyRequest(BaseModel):
 
 class ResumeRenameRequest(BaseModel):
     new_name: str
+
+
+class ResumeExportPdfRequest(BaseModel):
+    smart_one_page: bool = False
+    fit_mode: str | None = None
 
 
 class SectionUpdate(BaseModel):
@@ -571,12 +580,15 @@ def rename_resume(name: str, body: ResumeRenameRequest):
 
 
 @app.post("/api/resumes/{name}/export-pdf")
-async def export_pdf(name: str):
+async def export_pdf(name: str, body: ResumeExportPdfRequest | None = None):
     rdir = _require_resume_dir(name)
     template_path = rdir / "template.html"
     if not template_path.exists():
         raise HTTPException(404, f"template.html for resume '{name}' not found")
-    print_html = build_print_html(template_path.read_text(encoding="utf-8"), _read_content(rdir))
+    fit_mode = body.fit_mode if body and body.smart_one_page else None
+    if fit_mode not in {None, "natural", "expand", "compact", "overflow"}:
+        raise HTTPException(400, f"Invalid fit_mode: {fit_mode}")
+    print_html = build_print_html(template_path.read_text(encoding="utf-8"), _read_content(rdir), fit_mode=fit_mode)
     try:
         pdf = await render_pdf_bytes(print_html)
     except RuntimeError as exc:

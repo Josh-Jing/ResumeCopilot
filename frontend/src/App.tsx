@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import * as api from './api/client';
 import ResumePreview from './components/ResumePreview';
 import SectionEditor from './components/SectionEditor';
+import type { FitMode } from './lib/fitPolicy';
 import { useDebouncedCallback } from './hooks/useDebouncedCallback';
 import {
   cloneContent,
@@ -29,6 +30,8 @@ export default function App() {
   const [editingHeaderName, setEditingHeaderName] = useState(false);
   const [headerNameDraft, setHeaderNameDraft] = useState('');
   const [exportingPdf, setExportingPdf] = useState(false);
+  const [smartOnePage, setSmartOnePage] = useState(false);
+  const [fitMode, setFitMode] = useState<FitMode>('natural');
 
   const [editorWidth, setEditorWidth] = useState(420);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
@@ -306,7 +309,7 @@ export default function App() {
     if (!activeName || exportingPdf) return;
     setExportingPdf(true);
     try {
-      const blob = await api.exportPdf(activeName);
+      const blob = await api.exportPdf(activeName, smartOnePage ? fitMode : undefined);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -348,6 +351,11 @@ export default function App() {
       document.removeEventListener('mouseup', onMouseUp);
     };
   }, []);
+
+  useEffect(() => {
+    setSmartOnePage(false);
+    setFitMode('natural');
+  }, [activeName]);
 
   const editorSectionIds = content
     ? ['name', 'contact', ...(content.sections.photo ? ['photo'] : []), ...content.section_order]
@@ -422,6 +430,22 @@ export default function App() {
                 </h2>
               )}
               <div className="spacer" />
+              <button
+                className={`header-btn smart-one-page-btn ${smartOnePage ? 'active' : ''}`}
+                type="button"
+                aria-pressed={smartOnePage}
+                title="手动触发一页纸排版：根据当前内容高度压缩或拉伸纵向节奏"
+                onClick={() => setSmartOnePage((enabled) => !enabled)}
+              >
+                智能一页纸
+              </button>
+              {smartOnePage && fitMode !== 'natural' && (
+                <span className={`fit-mode-chip fit-${fitMode}`}>
+                  {fitMode === 'expand' && '拉伸填充'}
+                  {fitMode === 'compact' && '压缩至一页'}
+                  {fitMode === 'overflow' && '内容过长'}
+                </span>
+              )}
               <button className="header-btn" type="button" onClick={() => handleCopyResume(detail.name)}>复制简历</button>
               <button className="export-btn" type="button" onClick={handleExportPdf} disabled={exportingPdf}>
                 {exportingPdf ? '导出中...' : '导出 PDF'}
@@ -492,7 +516,12 @@ export default function App() {
               />
 
               <div className="preview-panel">
-                <ResumePreview templateHtml={detail.template_html} content={content} />
+                <ResumePreview
+                  templateHtml={detail.template_html}
+                  content={content}
+                  smartOnePage={smartOnePage}
+                  onFitModeChange={setFitMode}
+                />
               </div>
             </div>
           </>

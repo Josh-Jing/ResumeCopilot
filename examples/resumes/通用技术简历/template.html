@@ -6,8 +6,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 10.5pt;
-    line-height: 1.6;
+    font-size: calc(10.5pt * var(--fit-font-scale, 1));
+    line-height: calc(1.6 * var(--fit-line-scale, 1));
     color: #2c2c2c;
     padding: 48px 56px;
     max-width: 800px;
@@ -15,8 +15,8 @@
   }
   .resume-header {
     text-align: center;
-    margin-bottom: 28px;
-    padding-bottom: 16px;
+    margin-bottom: calc(28px * var(--fit-rhythm-scale, 1));
+    padding-bottom: calc(16px * var(--fit-rhythm-scale, 1));
     border-bottom: 2.5px solid #1a5276;
   }
   .resume-header h1,
@@ -36,7 +36,7 @@
     margin-top: 0;
   }
   .resume-section {
-    margin-bottom: 18px;
+    margin-bottom: calc(18px * var(--fit-rhythm-scale, 1));
   }
   .resume-section-title {
     font-size: 14pt;
@@ -46,15 +46,15 @@
     padding-bottom: 3px;
     margin-bottom: 8px;
   }
-  .resume-section-content p { margin-bottom: 6px; }
+  .resume-section-content p { margin-bottom: calc(6px * var(--fit-rhythm-scale, 1)); }
   .resume-section-content > p,
   .resume-section-content > ul > li,
   .resume-section-content > ol > li {
     text-align: justify;
     text-justify: inter-ideograph;
   }
-  .resume-section-content ul { padding-left: 18px; margin-bottom: 6px; }
-  .resume-section-content li { margin-bottom: 2px; }
+  .resume-section-content ul { padding-left: 18px; margin-bottom: calc(6px * var(--fit-rhythm-scale, 1)); }
+  .resume-section-content li { margin-bottom: calc(2px * var(--fit-rhythm-scale, 1)); }
   .resume-section-content strong { color: #1a5276; }
   .resume-section-content h1 {
     font-size: 28pt;

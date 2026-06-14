@@ -162,6 +162,26 @@ body {
   font-size: 12px;
 }
 
+.smart-one-page-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.fit-mode-chip {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #eef2f5;
+  color: var(--text-muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.fit-mode-chip.fit-overflow {
+  background: #fff0ed;
+  color: #b94b3f;
+}
+
 .main-body {
   flex: 1;
   display: flex;
