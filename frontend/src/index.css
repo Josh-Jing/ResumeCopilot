@@ -381,17 +381,3 @@ body {
   display: block;
   min-height: 200px;
 }
-
-.scale-indicator {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  background: var(--accent);
-  color: #fff;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  z-index: 100;
-}
-
-.scale-indicator.overflow-warning { background: #b94b3f; }

@@ -1,6 +1,7 @@
-import type { FitMode } from './fitPolicy';
-import { injectFitModeStyle } from './fitPolicy';
 import { injectTypographyStyle } from './typographyPolicy';
+
+export const A4_WIDTH = 794;
+export const A4_HEIGHT = 1123;
 
 const HEIGHT_REPORTER_SCRIPT = `<script>
   function reportHeight() {
@@ -12,16 +13,12 @@ const HEIGHT_REPORTER_SCRIPT = `<script>
   if (document.fonts) document.fonts.ready.then(reportHeight);
 </script>`;
 
-export function buildPreviewSrcDoc(renderedHtml: string, fitMode: FitMode): string {
-  let html = injectTypographyStyle(injectFitModeStyle(renderedHtml, fitMode));
+export function buildPreviewSrcDoc(renderedHtml: string): string {
+  let html = injectTypographyStyle(renderedHtml);
   if (html.includes('</body>')) {
     html = html.replace('</body>', `${HEIGHT_REPORTER_SCRIPT}</body>`);
   } else {
     html += HEIGHT_REPORTER_SCRIPT;
   }
   return html;
-}
-
-export function contentOverflowPolicy(fitMode: FitMode): 'hidden' | 'visible' {
-  return fitMode === 'overflow' ? 'visible' : 'hidden';
 }

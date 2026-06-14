@@ -100,42 +100,6 @@ Design notes:
 
 Example templates with inner CSS: `examples/resumes/通用技术简历/template.html`.
 
-## Fit Policy / 一页纸排版策略
-
-ResumeCopilot keeps the A4 page, equal left/right Page Margin, and full-width dividers fixed. Do **not** use whole-page or whole-content `transform: scale(...)` in templates to fit content; that shortens horizontal rules and causes right-side blank space.
-
-The app injects ratio-based CSS variables into the iframe:
-
-```css
-/* expand: 75%–100% full, gently stretch vertical rhythm */
-html { --fit-rhythm-scale: 1.06; --fit-line-scale: 1.03; }
-
-/* compact: 100%–130% full, gently compress vertical rhythm */
-html { --fit-rhythm-scale: 0.65; --fit-line-scale: 0.88; --fit-font-scale: 0.94; }
-```
-
-Templates should expose their base vertical rhythm through `calc()` so the injected variables scale each template's own design rather than overriding it with absolute values:
-
-```css
-body {
-  font-size: calc(var(--fit-font-scale, 1) * 10.5pt);
-  line-height: calc(1.6 * var(--fit-line-scale, 1));
-}
-.resume-header {
-  margin-bottom: calc(28px * var(--fit-rhythm-scale, 1));
-  padding-bottom: calc(16px * var(--fit-rhythm-scale, 1));
-}
-.resume-section {
-  margin-bottom: calc(18px * var(--fit-rhythm-scale, 1));
-}
-.resume-section-content p,
-.resume-section-content ul {
-  margin-bottom: calc(6px * var(--fit-rhythm-scale, 1));
-}
-```
-
-Use ratio variables such as `--fit-rhythm-scale` and `--fit-line-scale`; avoid absolute variables such as `--fit-header-gap: 34px`, because different templates have different base rhythms.
-
 ## Typography / 正文两端对齐
 
 The app injects body-copy justification into preview and PDF export. Templates do **not** need to duplicate this CSS.
@@ -197,12 +161,11 @@ If the backend is not running, fall back to the documented defaults:
    - Markdown h6 `.resume-section-content h6`: `10/14 = 0.71×` baseline.
    - Example absolute implementation: name `34pt`, Markdown h1 `28pt`, section title / h2 `14pt`, h3 `12.5pt`, h4 `11.25pt`, h5 `10.5pt`, h6 `10pt`.
    - Do not force Name Section to equal Markdown h1; Name is intentionally larger and wider-tracked.
-10. Support Fit Policy CSS variables for vertical rhythm when possible: `--fit-rhythm-scale`, `--fit-line-scale`, and optional `--fit-font-scale`.
-11. Keep Page Margin and full-width dividers horizontal-stable. Header Divider and section title rules should remain `width: 100%` inside the content box and should not be shortened by transform-based scaling.
-12. Avoid relying on external fonts as the only font source; include local Chinese font fallbacks such as `PingFang SC`, `Microsoft YaHei`, `Noto Sans SC`, `sans-serif`.
-13. Preserve the existing visual intent unless the user explicitly asks for a redesign.
-14. Do not add AI UI to the frontend template; AI interaction happens in Hermes terminal chat.
-15. Include **inner inline column CSS** (`.inner-row`, `.inner-col`, alignment modifiers) in every template so ` ```inner ` content blocks render correctly in preview and PDF export.
+10. Keep Page Margin and full-width dividers horizontal-stable. Header Divider and section title rules should remain `width: 100%` inside the content box and should not be shortened by transform-based scaling.
+11. Avoid relying on external fonts as the only font source; include local Chinese font fallbacks such as `PingFang SC`, `Microsoft YaHei`, `Noto Sans SC`, `sans-serif`.
+12. Preserve the existing visual intent unless the user explicitly asks for a redesign.
+13. Do not add AI UI to the frontend template; AI interaction happens in Hermes terminal chat.
+14. Include **inner inline column CSS** (`.inner-row`, `.inner-col`, alignment modifiers) in every template so ` ```inner ` content blocks render correctly in preview and PDF export.
 
 ## Photo Section guidance
 
@@ -276,6 +239,5 @@ The helper is intentionally read-only. It does not edit templates and does not c
 - If the helper warns that Header Divider was not detected but the design has a custom separator, prefer adding explicit `.resume-header-divider` markup or a recognizable `.resume-header` border/pseudo-element so the convention is machine-checkable.
 - Styling only old placeholder wrappers and not `.resume-section-*` makes injected ordinary sections look wrong.
 - Multiple main slots are ambiguous; keep one main slot for now.
-- Do not use whole-content `transform: scale(...)` as a one-page fitting trick. It breaks equal margins and makes long horizontal rules stop before the right Page Margin.
-- Fit Policy variables should be ratio-based (`--fit-rhythm-scale`, `--fit-line-scale`), not absolute per-mode values, so each template keeps its own visual rhythm.
+- Do not use whole-content `transform: scale(...)` to squeeze content onto one page. It breaks equal margins and makes long horizontal rules stop before the right Page Margin.
 - Missing `.inner-row` grid CSS makes ` ```inner ` blocks look broken or overflow past section title rules; add the required inner CSS from this skill.

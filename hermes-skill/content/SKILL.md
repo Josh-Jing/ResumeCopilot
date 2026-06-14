@@ -148,7 +148,7 @@ Recommended workflow:
 
 For content edits:
 
-- Keep content concise enough for one A4 page. ResumeCopilot Fit Policy can gently expand sparse-but-near-full content and compact content up to about 1.3× A4, but it intentionally stops bailing out beyond that to force content editing.
+- Keep content concise enough for one A4 page when possible.
 - Prefer resume bullets shaped as: action + technology/context + measurable outcome.
 - For NLP / generative AI / Agent roles, surface Agent memory, RAG, LLM tooling, evaluation, and infra impact when relevant.
 - Preserve factual claims. Do not invent metrics; ask or phrase qualitatively if data is unavailable.
