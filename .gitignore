@@ -15,3 +15,6 @@ frontend/dist/
 # IDE
 .idea/
 .vscode/
+
+# Git worktrees (linked worktrees live under this dir)
+.worktrees/
