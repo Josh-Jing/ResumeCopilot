@@ -240,6 +240,14 @@ def build_print_html(template_html: str, content: dict, *, fit_mode: str | None 
     """Return complete print-oriented HTML for PDF export."""
     result = template_html
 
+    # Strip existing <!doctype> and <html>/<head>/<body> outer tags if template already has them
+    # We only need to add doctype once, and preserve the template's structure intact.
+    # This fixes the issue where :root CSS variables declared inside template don't work
+    # because double <html> tags cause :root to match the outer injected html.
+    result = re.sub(r'^\s*<!doctype[^>]*>\s*', '', result, flags=re.I)
+    result = re.sub(r'^\s*<html[^>]*>\s*', '', result, flags=re.I)
+    result = re.sub(r'\s*</html>\s*$', '', result, flags=re.I)
+
     sections = content.get("sections", {})
     for section_id in ("name", "contact", "photo"):
         section = sections.get(section_id)
@@ -264,7 +272,7 @@ def build_print_html(template_html: str, content: dict, *, fit_mode: str | None 
     result = _inject_fit_mode_style(result, fit_mode)
     result = _inject_typography_css(result)
     result = _inject_print_css(result)
-    if not result.lstrip().lower().startswith("<!doctype"):
+    if not result.lstrip().lower().startswith(("<!doctype", "<html")):
         result = "<!doctype html>\n" + result
     return result
 
