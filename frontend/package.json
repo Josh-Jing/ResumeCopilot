@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "tsx --tsconfig tsconfig.app.json src/lib/fitPolicy.test.ts && tsx --tsconfig tsconfig.app.json src/lib/typographyPolicy.test.ts && tsx --tsconfig tsconfig.app.json src/lib/previewModel.test.ts && tsx --tsconfig tsconfig.app.json src/lib/sectionModel.test.ts && tsx --tsconfig tsconfig.app.json src/lib/innerBlock.test.ts && tsx --tsconfig tsconfig.app.json src/components/SectionEditor.scroll.test.tsx && tsx --tsconfig tsconfig.app.json src/components/App.smartOnePage.test.tsx"
+    "test": "tsx --tsconfig tsconfig.app.json src/api/client.test.ts && tsx --tsconfig tsconfig.app.json src/lib/fitPolicy.test.ts && tsx --tsconfig tsconfig.app.json src/lib/typographyPolicy.test.ts && tsx --tsconfig tsconfig.app.json src/lib/previewModel.test.ts && tsx --tsconfig tsconfig.app.json src/lib/sectionModel.test.ts && tsx --tsconfig tsconfig.app.json src/lib/innerBlock.test.ts && tsx --tsconfig tsconfig.app.json src/components/SectionEditor.scroll.test.tsx && tsx --tsconfig tsconfig.app.json src/components/App.smartOnePage.test.tsx"
   },
   "dependencies": {
     "markdown-it": "^14.2.0",

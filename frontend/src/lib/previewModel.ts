@@ -15,14 +15,18 @@ const HEIGHT_REPORTER_SCRIPT = `<script>
 </script>`;
 
 export function buildPreviewSrcDoc(renderedHtml: string, fitMode: FitMode, smartOnePage = true): string {
-  const htmlWithFit = smartOnePage ? injectFitModeStyle(renderedHtml, fitMode) : renderedHtml;
-  let html = injectTypographyStyle(htmlWithFit);
+  let html = buildPdfSrcDoc(renderedHtml, fitMode, smartOnePage);
   if (html.includes('</body>')) {
     html = html.replace('</body>', `${HEIGHT_REPORTER_SCRIPT}</body>`);
   } else {
     html += HEIGHT_REPORTER_SCRIPT;
   }
   return html;
+}
+
+export function buildPdfSrcDoc(renderedHtml: string, fitMode: FitMode, smartOnePage = true): string {
+  const htmlWithFit = smartOnePage ? injectFitModeStyle(renderedHtml, fitMode) : renderedHtml;
+  return injectTypographyStyle(htmlWithFit);
 }
 
 export function contentOverflowPolicy(fitMode: FitMode): 'hidden' | 'visible' {

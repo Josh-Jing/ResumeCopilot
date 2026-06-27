@@ -32,6 +32,7 @@ export default function App() {
   const [exportingPdf, setExportingPdf] = useState(false);
   const [smartOnePage, setSmartOnePage] = useState(false);
   const [fitMode, setFitMode] = useState<FitMode>('natural');
+  const [pdfHtml, setPdfHtml] = useState<string | null>(null);
 
   const [editorWidth, setEditorWidth] = useState(420);
   const [draggingSection, setDraggingSection] = useState<string | null>(null);
@@ -309,7 +310,10 @@ export default function App() {
     if (!activeName || exportingPdf) return;
     setExportingPdf(true);
     try {
-      const blob = await api.exportPdf(activeName, smartOnePage ? fitMode : undefined);
+      const blob = await api.exportPdf(activeName, {
+        fitMode: smartOnePage ? fitMode : undefined,
+        previewHtml: pdfHtml ?? undefined,
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -323,7 +327,7 @@ export default function App() {
     } finally {
       setExportingPdf(false);
     }
-  }, [activeName, exportingPdf]);
+  }, [activeName, exportingPdf, fitMode, pdfHtml, smartOnePage]);
 
   useEffect(() => {
     if (!editingHeaderName) return;
@@ -355,6 +359,7 @@ export default function App() {
   useEffect(() => {
     setSmartOnePage(false);
     setFitMode('natural');
+    setPdfHtml(null);
   }, [activeName]);
 
   const editorSectionIds = content
@@ -521,6 +526,7 @@ export default function App() {
                   content={content}
                   smartOnePage={smartOnePage}
                   onFitModeChange={setFitMode}
+                  onPdfHtmlChange={setPdfHtml}
                 />
               </div>
             </div>

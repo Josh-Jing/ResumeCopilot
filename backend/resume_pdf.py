@@ -46,7 +46,7 @@ TYPOGRAPHY_CSS = """
 PRINT_CSS = """
 <style id="resume-copilot-print-css">
   @page { size: A4; margin: 0; }
-  html, body { width: 794px; min-height: 1123px; }
+  html, body { width: 794px; height: 1123px; overflow: hidden; }
   body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 </style>
 """
@@ -273,6 +273,26 @@ def build_print_html(template_html: str, content: dict, *, fit_mode: str | None 
     result = _inject_typography_css(result)
     result = _inject_print_css(result)
     if not result.lstrip().lower().startswith(("<!doctype", "<html")):
+        result = "<!doctype html>\n" + result
+    return result
+
+
+def prepare_preview_html_for_pdf(preview_html: str) -> str:
+    """Return frontend-rendered preview HTML prepared for PDF export.
+
+    This is the preferred PDF path: the browser preview already rendered
+    Markdown, Section v2 slots, typography, and the active fit mode. The backend
+    should only add print/page CSS instead of reconstructing the resume with a
+    separate Markdown renderer.
+    """
+    result = re.sub(
+        r"<script>\s*function\s+reportHeight\s*\(\)\s*\{.*?resume-height.*?</script>",
+        "",
+        preview_html,
+        flags=re.S,
+    )
+    result = _inject_print_css(result)
+    if not result.lstrip().lower().startswith("<!doctype"):
         result = "<!doctype html>\n" + result
     return result
 

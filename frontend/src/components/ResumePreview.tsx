@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ResumeContent } from '../api/client';
 import { computeFitMode } from '../lib/fitPolicy';
 import type { FitMode, FitResult } from '../lib/fitPolicy';
-import { A4_HEIGHT, A4_WIDTH, buildPreviewSrcDoc, contentOverflowPolicy } from '../lib/previewModel';
+import { A4_HEIGHT, A4_WIDTH, buildPdfSrcDoc, buildPreviewSrcDoc, contentOverflowPolicy } from '../lib/previewModel';
 import { renderResumeHtml } from '../lib/resumeRenderer';
 
 interface ResumePreviewProps {
@@ -10,6 +10,7 @@ interface ResumePreviewProps {
   content: ResumeContent;
   smartOnePage?: boolean;
   onFitModeChange?: (fitMode: FitMode) => void;
+  onPdfHtmlChange?: (pdfHtml: string) => void;
 }
 
 const INITIAL_FIT: FitResult = { mode: 'natural', ratio: 0, overflow: false };
@@ -19,6 +20,7 @@ export default function ResumePreview({
   content,
   smartOnePage = false,
   onFitModeChange,
+  onPdfHtmlChange,
 }: ResumePreviewProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState<FitResult>(INITIAL_FIT);
@@ -36,6 +38,15 @@ export default function ResumePreview({
     () => buildPreviewSrcDoc(renderedHtml, activeFitMode, smartOnePage),
     [activeFitMode, renderedHtml, smartOnePage],
   );
+
+  const pdfSrcDoc = useMemo(
+    () => buildPdfSrcDoc(renderedHtml, activeFitMode, smartOnePage),
+    [activeFitMode, renderedHtml, smartOnePage],
+  );
+
+  useEffect(() => {
+    onPdfHtmlChange?.(pdfSrcDoc);
+  }, [onPdfHtmlChange, pdfSrcDoc]);
 
   useEffect(() => {
     setFit(INITIAL_FIT);

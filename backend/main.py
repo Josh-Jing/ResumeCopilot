@@ -34,6 +34,7 @@ from resume_domain import (
 from resume_pdf import (
     build_content_disposition,
     build_print_html,
+    prepare_preview_html_for_pdf,
     render_pdf_bytes,
 )
 
@@ -222,6 +223,7 @@ class ResumeRenameRequest(BaseModel):
 class ResumeExportPdfRequest(BaseModel):
     smart_one_page: bool = False
     fit_mode: str | None = None
+    preview_html: str | None = None
 
 
 class SectionUpdate(BaseModel):
@@ -590,7 +592,12 @@ async def export_pdf(name: str, body: ResumeExportPdfRequest | None = None):
     fit_mode = body.fit_mode if body is not None else None
     if fit_mode not in {None, "natural", "expand", "compact", "overflow"}:
         raise HTTPException(400, f"Invalid fit_mode: {fit_mode}")
-    print_html = build_print_html(template_path.read_text(encoding="utf-8"), _read_content(rdir), fit_mode=fit_mode)
+    # Preferred path: inherit the frontend preview's fully rendered HTML so PDF
+    # export cannot drift from browser preview markdown/section rendering.
+    if body and body.preview_html:
+        print_html = prepare_preview_html_for_pdf(body.preview_html)
+    else:
+        print_html = build_print_html(template_path.read_text(encoding="utf-8"), _read_content(rdir), fit_mode=fit_mode)
     try:
         pdf = await render_pdf_bytes(print_html)
     except RuntimeError as exc:

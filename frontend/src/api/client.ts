@@ -94,11 +94,26 @@ export async function renameResume(name: string, newName: string): Promise<Resum
 
 export type PdfFitMode = 'natural' | 'expand' | 'compact' | 'overflow';
 
-export async function exportPdf(name: string, fitMode?: PdfFitMode): Promise<Blob> {
+export interface PdfExportOptions {
+  fitMode?: PdfFitMode;
+  previewHtml?: string;
+}
+
+export async function exportPdf(name: string, options: PdfFitMode | PdfExportOptions = {}): Promise<Blob> {
+  const body: { smart_one_page?: boolean, fit_mode?: PdfFitMode, preview_html?: string } = {};
+  const fitMode = typeof options === 'string' ? options : options.fitMode;
+  const previewHtml = typeof options === 'string' ? undefined : options.previewHtml;
+  if (fitMode !== undefined) {
+    body.fit_mode = fitMode;
+    body.smart_one_page = true; // smart_one_page is just UI toggle state, backend doesn't use it anymore
+  }
+  if (previewHtml !== undefined) {
+    body.preview_html = previewHtml;
+  }
   const res = await fetch(`${API_BASE}/resumes/${encodeURIComponent(name)}/export-pdf`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(fitMode && fitMode !== 'natural' ? { smart_one_page: true, fit_mode: fitMode } : {}),
+    body: JSON.stringify(body),
   });
   if (!res.ok) {
     let detail = '';

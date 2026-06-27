@@ -4,6 +4,7 @@ from resume_pdf import (
     _inject_typography_css,
     build_print_html,
     compute_fit_mode,
+    prepare_preview_html_for_pdf,
 )
 
 
@@ -53,13 +54,29 @@ def test_build_print_html_includes_fit_mode_when_requested() -> None:
     assert 'data-fit-mode="compact"' in html
 
 
+def test_prepare_preview_html_for_pdf_keeps_frontend_rendered_html_and_adds_print_css() -> None:
+    preview_html = (
+        '<!doctype html><html><head><style data-fit-mode="compact">'
+        'html { --fit-rhythm-scale: 0.65; }'
+        '</style></head><body><main>frontend rendered</main></body></html>'
+    )
+    html = prepare_preview_html_for_pdf(preview_html)
+    assert "frontend rendered" in html
+    assert 'data-fit-mode="compact"' in html
+    assert "resume-copilot-print-css" in html
+    assert "height: 1123px" in html
+    assert "overflow: hidden" in html
+    assert "resume-height" not in html
+
+
 def main() -> None:
     test_inject_typography_css_is_idempotent()
     test_build_print_html_includes_typography_css()
     test_compute_fit_mode_matches_preview_thresholds()
     test_fit_mode_style_injection_is_manual()
     test_build_print_html_includes_fit_mode_when_requested()
-    print("resume_pdf tests passed: 5")
+    test_prepare_preview_html_for_pdf_keeps_frontend_rendered_html_and_adds_print_css()
+    print("resume_pdf tests passed: 6")
 
 
 if __name__ == "__main__":
