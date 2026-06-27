@@ -585,7 +585,9 @@ async def export_pdf(name: str, body: ResumeExportPdfRequest | None = None):
     template_path = rdir / "template.html"
     if not template_path.exists():
         raise HTTPException(404, f"template.html for resume '{name}' not found")
-    fit_mode = body.fit_mode if body and body.smart_one_page else None
+    # When smart_one_page is True, frontend provides the pre-computed fit_mode
+    # When smart_one_page is False, user has turned off auto-fit → fit_mode = None (no adjustments)
+    fit_mode = body.fit_mode if body is not None else None
     if fit_mode not in {None, "natural", "expand", "compact", "overflow"}:
         raise HTTPException(400, f"Invalid fit_mode: {fit_mode}")
     print_html = build_print_html(template_path.read_text(encoding="utf-8"), _read_content(rdir), fit_mode=fit_mode)
