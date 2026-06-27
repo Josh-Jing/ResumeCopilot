@@ -89,6 +89,8 @@ def _render_markdown_blocks(markdown: str) -> str:
         escaped = html.escape(text, quote=True)
         escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
         escaped = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", escaped)
+        escaped = re.sub(r"\*([^*]+)\*", r"<em>\1</em>", escaped)
+        escaped = re.sub(r"_([^_]+)_", r"<em>\1</em>", escaped)
         return escaped
 
     def flush_list() -> None:
@@ -115,6 +117,14 @@ def _render_markdown_blocks(markdown: str) -> str:
             flush_list()
             flush_paragraph()
             blocks.append(f"<h1>{inline(stripped[2:].strip())}</h1>")
+        elif stripped.startswith("##### "):
+            flush_list()
+            flush_paragraph()
+            blocks.append(f"<h5>{inline(stripped[6:].strip())}</h5>")
+        elif stripped.startswith("#### "):
+            flush_list()
+            flush_paragraph()
+            blocks.append(f"<h4>{inline(stripped[5:].strip())}</h4>")
         elif stripped.startswith("### "):
             flush_list()
             flush_paragraph()
@@ -123,6 +133,10 @@ def _render_markdown_blocks(markdown: str) -> str:
             flush_list()
             flush_paragraph()
             blocks.append(f"<h2>{inline(stripped[3:].strip())}</h2>")
+        elif stripped.startswith("###### "):
+            flush_list()
+            flush_paragraph()
+            blocks.append(f"<h6>{inline(stripped[7:].strip())}</h6>")
         elif re.match(r"^[-*]\s+", stripped):
             flush_paragraph()
             list_items.append(inline(re.sub(r"^[-*]\s+", "", stripped)))
