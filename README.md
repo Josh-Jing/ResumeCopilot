@@ -1,17 +1,21 @@
 # ResumeCopilot
 
-人机协同简历编辑软件：左侧 Markdown 分屏编辑，右侧 A4 实时预览；Hermes Agent 通过 Skills 与后端语义 API 安全改写简历内容。
+人机协同简历编辑软件：左侧结构化 Markdown 编辑，右侧 A4 实时预览；后端提供简历语义 API、PDF 导出与文件监听，Hermes Agent 可通过 Skills 安全改写简历内容。
 
-本仓库是对 Hermes 初版的重构，主要改进：
+这个仓库主要用于展示一个从“模板编辑”到“Agent 协作改写”的完整小型工具链。项目没有做成通用 SaaS，重点放在本地可运行、数据结构清晰、编辑体验稳定。
 
-- **正式环境单端口部署**：`npm run build` 构建前端，由 FastAPI 托管静态资源，不再用 `npm run dev` 当生产入口
-- **编辑器稳定性**：`SectionEditor` 本地草稿 + `React.memo` 结构共享，避免长简历编辑时滚动条跳动
-- **WebSocket 去抖**：忽略自身保存触发的 `file_changed`，减少无意义重载
+## 功能
+
+- 左侧按 Section 编辑简历内容，右侧实时渲染 A4 预览
+- FastAPI 后端管理简历文件、Section 语义操作、PDF 导出和 WebSocket 文件变更通知
+- React + TypeScript 前端处理长简历编辑、预览分页和智能缩放策略
+- Hermes Skills 提供面向 Agent 的内容改写和模板生成入口
+- 示例简历数据可直接用于开发和验证
 
 ## 项目结构
 
 ```text
-ResumeCopilot-cursor/
+ResumeCopilot/
 ├── backend/           # FastAPI + Section v2 语义 API + PDF 导出
 ├── frontend/          # React + Vite + TypeScript
 ├── examples/resumes/  # 示例简历（开发模式默认数据目录）
@@ -90,14 +94,22 @@ VITE_RESUME_COPILOT_BACKEND=http://127.0.0.1:8911 npm run dev -- --port 5174
 
 ```bash
 # 后端
-cd backend && uv run python test_resume_domain.py
+cd backend
+uv run python test_resume_domain.py
+uv run python test_inner_block.py
+uv run python test_resume_pdf.py
 
 # 前端
-cd frontend && npm ci && npm test && npm run build
+cd frontend
+npm ci
+npm test
+npm run build
 ```
 
 ## API
 
-与架构方案一致：`/api/resumes`、`/api/resumes/{name}/content`、Section 语义 API、`/api/resumes/{name}/export-pdf`、`/ws`。
+主要接口包括：`/api/resumes`、`/api/resumes/{name}/content`、Section 语义 API、`/api/resumes/{name}/export-pdf`、`/ws`。
 
-设计文档见：`/Users/jqf/Documents/sidian-OhBedrock/Projects/ResumeCopilot/`
+## License
+
+MIT
