@@ -45,6 +45,13 @@ body {
   gap: 8px;
 }
 
+.logo {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 6px;
+}
+
 .sidebar-list {
   flex: 1;
   overflow-y: auto;

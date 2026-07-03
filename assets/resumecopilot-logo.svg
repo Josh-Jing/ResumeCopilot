@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">ResumeCopilot logo</title>
+  <desc id="desc">A document-shaped mark with a guided path, representing resume editing with copilot assistance.</desc>
+  <defs>
+    <linearGradient id="bg" x1="16" y1="12" x2="112" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1a5276"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <path
+    d="M34 17h39.5L98 41.5V104c0 5-4 9-9 9H34c-5 0-9-4-9-9V26c0-5 4-9 9-9Z"
+    fill="#ffffff"
+  />
+  <path d="M74 18v20c0 3.3 2.7 6 6 6h18" fill="#d8efeb"/>
+  <path
+    d="M42 82c19 0 19-34 39-34 8.6 0 14 5.6 14 14 0 12-12 20-30 20H55"
+    fill="none"
+    stroke="#2f9a8c"
+    stroke-width="11"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M42 48h19M42 62h14M42 96h40"
+    fill="none"
+    stroke="#8fb5bf"
+    stroke-width="8"
+    stroke-linecap="round"
+  />
+  <circle cx="42" cy="82" r="8" fill="#1a5276"/>
+  <circle cx="81" cy="48" r="8" fill="#2f9a8c"/>
+  <path d="M94 75l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z" fill="#d58a28"/>
+</svg>

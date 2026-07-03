@@ -1,5 +1,7 @@
 # ResumeCopilot
 
+<img src="assets/resumecopilot-logo.svg" alt="ResumeCopilot logo" width="96">
+
 人机协同简历编辑软件：左侧结构化 Markdown 编辑，右侧 A4 实时预览；后端提供简历语义 API、PDF 导出与文件监听，Hermes Agent 可通过 Skills 安全改写简历内容。
 
 这个仓库主要用于展示一个从“模板编辑”到“Agent 协作改写”的完整小型工具链。项目没有做成通用 SaaS，重点放在本地可运行、数据结构清晰、编辑体验稳定。

@@ -370,7 +370,7 @@ export default function App() {
     <>
       <aside className="sidebar">
         <div className="sidebar-header">
-          <span className="logo">📄</span> ResumeCopilot
+          <img className="logo" src="/logo.svg" alt="" aria-hidden="true" /> ResumeCopilot
         </div>
         <div className="sidebar-list">
           {resumes.map((r) => (
